@@ -46,8 +46,6 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	
 		Ardudroid :: Ardudroid(uint8_t _softRx, uint8_t _softTx)
 	{	
-
-			#define BT_SoftSerial
 			softSerial = new SoftwareSerial(_softRx, _softTx);
 		
 			RemoteDirection = 0;
@@ -74,10 +72,26 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	
 	//setter
 	//******************************************************************
-	void Ardudroid :: BTsoftSerial_begin(int Baud) //default 9600
+	void Ardudroid :: BTsoftBee_begin(int Baud) //default 9600
 	{	
 		#if defined(BT_SoftSerial)
 			softSerial->	begin(Baud);
+		#endif
+	}
+	
+	void Ardudroid :: BTsoftSerial_begin() 
+	{	
+		#if defined(BT_SoftSerial)
+			softSerial-> begin(38400);
+			
+			softSerial-> print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+		    softSerial-> print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
+		    softSerial-> print("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
+		    delay(2000); // This delay is required.
+		    softSerial-> print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
+		    //Serial-> println("The slave bluetooth is inquirable!");
+		    delay(2000); // This delay is required.
+		    softSerial-> flush();  
 		#endif
 	}
 	
@@ -189,7 +203,7 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 				data =  (char)softSerial->read();
 		#else
 			if(Serial.available())
-				data = (char)Serial.read()
+				data = (char)Serial.read();
 		#endif
 		return data;
 	}
@@ -244,7 +258,7 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		}
 		getData();	
 	#else
-		while(Serial.available(){
+		while(Serial.available()){
 			char inChar = (char)Serial.read(); 
 			// add it to the inputString:
 			inputString[countData] = inChar;
