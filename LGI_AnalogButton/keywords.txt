@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map for AnalogButton Lib
+# www.letsgoING.de 
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AnalogButton	KEYWORD1
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setDebounceTime	KEYWORD2
+setSwitchState	KEYWORD2
+
+startButton	KEYWORD2
+getButton	KEYWORD2
+getSwitch	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

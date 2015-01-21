@@ -1,0 +1,35 @@
+#######################################
+# Syntax Coloring Map for Qtouch Lib
+# www.letsgoING.de 
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+QTouch	KEYWORD1
+QTouchButton	KEYWORD1
+QTouchSlider	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+init	KEYWORD2
+
+setHysteresis	KEYWORD2
+setOffset	KEYWORD2
+setThreshold	KEYWORD2
+
+getHysteresis	KEYWORD2
+getOffset	KEYWORD2
+getThreshold	KEYWORD2
+
+isTouched	KEYWORD2
+getRawTouch	KEYWORD2
+getTouchPosition	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
