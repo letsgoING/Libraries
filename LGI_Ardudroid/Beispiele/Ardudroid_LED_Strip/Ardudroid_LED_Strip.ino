@@ -1,55 +1,78 @@
-
-/*************************************
- * Beispiel zur Fernsteuerung eines  *
- * LED-Streifens mit der LGI-App     *
- *************************************/
-
 #include <letsgoING_Ardudroid.h>
-#include <RGBdriver.h>
+#include <Adafruit_NeoPixel.h>
+#include <LGI_QTouch.h>
 
-#define CLK 4//pins definitions for the driver        
-#define DIO 5
+#define BTSystem 2 //0->Arduino HardwareSerial	1->Arduino(SoftSerial)	2->Attiny(SoftSerial)
 
-//Erstelle Ardudroid-Objekt
-Ardudroid Remote;
-//Erstelle RGB-LED-Objekt
-RGBdriver LED(CLK,DIO);
 
-void setup() 
-{
-  //Starte Serielle Kommunikation mit Bluetooth-Modul
-  Remote.BTbee_begin(9600); //BTserial_begin(); wenn Bluetooth Serial Modul
+#define PIN 2
+#define PIXEL 1
+
+//NeoPixel
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL, PIN, NEO_RGB + NEO_KHZ800);
+uint32_t white, red, green, blue;
+int numPixel;
+
+//QTouch
+QTouchButton Button(A3, A2);
+boolean touched = false;
+
+//For Wait without delay()
+long lastTime=0;
+long waitTime = 50;
+
+//BT COM
+#if BTSystem == 0
+//Arduino HardwareSerial
+Ardudroid Remote;	
+
+void serialEvent(){
+  Remote.readRemote();	
 }
 
-void loop() 
-{
-  //Übergebe Werte der Fernsteuerung an LED
-  LED.begin(); // begin
+#elif BTsystem == 1
+//Arduino SoftwareSerial
+Ardudroid Remote(4,5);  //DO NOT USE PIN0 AND PIN1
+#else
+//Attiny SoftwareSerial
+Ardudroid Remote(0,1);
+#endif
 
-  if(Remote.getLedSwitch())//Wenn LED-Schalter aktiviert lese Fernbedienung
-    LED.SetColor(Remote.getRed(), Remote.getGreen(), Remote.getBlue()); //Red. first node data 
-  else //Sonst Leds aus
-    LED.SetColor(0,0,0);
 
-  LED.end();
+void setup() {
+  //Init NeoPixel
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+
+  white = strip.Color(250, 250, 250);
+  strip.setPixelColor(0, white);  
+  strip.show();
+  delay(1000);
+
+  //Init Button
+  Button.init();
+
+  //BT COM
+#if BTSystem == 0
+  //Arduino HardwareSerial
+  Remote.BTserial_begin(9600);	
+#else
+  //Arduino and Attiny SoftwareSerial
+  Remote.BTsoftSerial_begin(9600);
+#endif
 }
 
+void loop() {
 
-//Lese Daten ein wenn vorhanden
-//*******************************
-void serialEvent() 
-{
-  //Lese Daten ein solange vorhanden
-  while(Serial.available()) 
-  {
-    //lese Fernbedienung
-    Remote.readBluetooth();	
-  }  
-  //Rechne Daten in passende Werte um
-  Remote.getData();
+  //IF SoftSerial is used	
+#if BTSystem
+  Remote.readSoftRemote();
+#endif
+
+  //Set Color if Button touched
+  if(Button.isTouched()){
+    strip.setPixelColor(0,Remote.getRed() ,Remote.getGreen() ,Remote.getBlue());  
+    strip.show();
+  }
 }
-
-
-
-
 

@@ -59,30 +59,39 @@ public:
 	Ardudroid();
 	Ardudroid(uint8_t _softRx, uint8_t _softTx);
 	//setter
-	//******************************************************************   
-	void BTsoftSerial_begin(int Baud); 
-	void BTbee_begin(int Baud);
-	void BTserial_setup(String btName, String btCode);
-	void BTserial_begin();
+	//****************************************************************** 
+	void BTsoftSerial_begin(int Baud);	
+	void BTsoftGrove_begin(); 
+	void BTserial_begin(int Baud);
+	void BTgrove_setup(String btName, String btCode);
+	void BTgrove_begin();
 	//getter
 	//******************************************************************
 	//Fernsteuerung
 	int getSpeed();
 	int getDirection();
 	bool getButton(uint8_t Button);
+	
 	//LED_Steuerung
 	int getRed();
 	int getGreen();
 	int getBlue();
 	bool getLedSwitch();
-	//Monitor
-	char getBluetooth();
+	
 	//Events
 	bool getEvent(uint8_t Event);
 		
 	//Read Android
 	//******************************************************************
-	void readBluetooth();
+	//Monitor
+	char readMonitor();
+	char readSoftMonitor();
+	//Remote
+	void readRemote();
+	void readSoftRemote();
+	
+	//Parse Data
+	//******************************************************************
 	void getData();
 
 };

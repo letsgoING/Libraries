@@ -1,56 +1,47 @@
 #include <movingAverage.h>
 #include <letsgoING_Ardudroid.h>
-#include <RGBdriver.h>
-#define CLK 4//pins definitions for the driver        
-#define DIO 5
+#include <Adafruit_NeoPixel.h>
+
+#define PIN 2
+#define PIXEL 1
 
 int loudness;
 int Red, Green, Blue;
 
-RGBdriver Driver(CLK,DIO);
+//Ardudroid
 Ardudroid Remote;
+//Avg
 movingAverage average(15);
+//NeoPixel
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL, PIN, NEO_RGB + NEO_KHZ800);
 
-
-void serialEvent() 
-{
-  //Lese Daten ein solange vorhanden
-  while(Serial.available()) 
-  {
+void serialEvent(){
     //lese Fernbedienung
     Remote.readBluetooth();	
-  }  
-  //Rechne Daten in passende Werte um
-  Remote.getData();
 }
 
 void setup() 
 {
-  Driver.begin();    
-  Driver.SetColor(0, 0, 0);
-  Driver.end();
   
   Remote.BTserial_begin();
   average.clear();
   
+  //Init NeoPixel
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
   
   //STARTUP LIGHT
-  delay(500);
-  Driver.begin();
-  Driver.SetColor(255, 0, 0);
-  Driver.end();
-  delay(500);
-  Driver.begin();
-  Driver.SetColor(0, 255, 0);
-  Driver.end();
-  delay(500);
-  Driver.begin();
-  Driver.SetColor(0, 0, 255);
-  Driver.end();
-  delay(500);
-  Driver.begin();
-  Driver.SetColor(255, 255, 255);
-  Driver.end();
+  strip.setPixelColor(0, strip.Color(250, 0, 0));  
+  strip.show();
+  delay(1000);
+  strip.setPixelColor(0, strip.Color(0, 250, 0));  
+  strip.show();
+  delay(1000);
+  strip.setPixelColor(0, strip.Color(0, 0, 250));  
+  strip.show();
+  delay(1000);
+  strip.setPixelColor(0, strip.Color(0, 0, 0));  
+  strip.show();
   delay(1000);
   
 }
@@ -73,10 +64,8 @@ void loop()
     Blue     = 0;
     delay(10);
   }
-
-
-  Driver.begin();
-  Driver.SetColor(Red, Green, Blue);
-  Driver.end();
+  
+  strip.setPixelColor(0, strip.Color(Red, Green, Blue)); 
+  strip.show();
 }
 

@@ -16,12 +16,23 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 
 #include "letsgoING_Ardudroid.h"
 
-
+#if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+	#define SerialAvailable() 0
+    #define SerialBegin(X)
+	#define SerialPrint(X) 
+	#define SerialRead() 0
+	#define SerialFlush() 
+#else
+	#define SerialAvailable() Serial.available()
+    #define SerialBegin(X) Serial.begin(X)
+	#define SerialPrint(X) Serial.print(X)
+	#define SerialRead() Serial.read()
+	#define SerialFlush() Serial.flush()
+#endif
 
 //Konstruktor
 	//******************************************************************
-	Ardudroid :: Ardudroid()
-	{	
+	Ardudroid :: Ardudroid(){	
 			RemoteDirection = 0;
 			RemoteSpeed		= 0;
 			LedRed			= 0;
@@ -44,8 +55,7 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	
 	}
 	
-		Ardudroid :: Ardudroid(uint8_t _softRx, uint8_t _softTx)
-	{	
+	Ardudroid :: Ardudroid(uint8_t _softRx, uint8_t _softTx){	
 			softSerial = new SoftwareSerial(_softRx, _softTx);
 		
 			RemoteDirection = 0;
@@ -72,16 +82,11 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	
 	//setter
 	//******************************************************************
-	void Ardudroid :: BTsoftBee_begin(int Baud) //default 9600
-	{	
-		#if defined(BT_SoftSerial)
-			softSerial->	begin(Baud);
-		#endif
+	void Ardudroid :: BTsoftSerial_begin(int Baud){//default 9600	
+			softSerial->begin(Baud);
 	}
 	
-	void Ardudroid :: BTsoftSerial_begin() 
-	{	
-		#if defined(BT_SoftSerial)
+	void Ardudroid :: BTsoftGrove_begin(){	
 			softSerial-> begin(38400);
 			
 			softSerial-> print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
@@ -92,67 +97,54 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		    //Serial-> println("The slave bluetooth is inquirable!");
 		    delay(2000); // This delay is required.
 		    softSerial-> flush();  
-		#endif
 	}
 	
 	
-	void Ardudroid :: BTbee_begin(int Baud) //default 9600
-	{
-		#ifndef BT_SoftSerial
-			Serial.begin(Baud);
-		#endif
+	void Ardudroid :: BTserial_begin(int Baud){//default 9600
+			SerialBegin(Baud);
 	}
 		
-	void Ardudroid :: BTserial_setup(String btName, String btCode)
-	{
-	  #ifndef BT_SoftSerial
-	  Serial.begin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
-	  Serial.print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+	void Ardudroid :: BTgrove_setup(String btName, String btCode){
+	  SerialBegin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
+	  SerialPrint("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
 	  
-	  Serial.print("\r\n+STNA="+btName+"\r\n"); //set the bluetooth name as "SeeedBTSlave"
-	  Serial.print("\r\n+STPIN="+btCode+"\r\n");//Set SLAVE pincode"0000"
+	  SerialPrint("\r\n+STNA="+btName+"\r\n"); //set the bluetooth name as "SeeedBTSlave"
+	  SerialPrint("\r\n+STPIN="+btCode+"\r\n");//Set SLAVE pincode"0000"
 	  
-	  Serial.print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
-	  Serial.print("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
+	  SerialPrint("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
+	  SerialPrint("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
 	  delay(2000); // This delay is required.
-	  Serial.print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
-	  //Serial.println("The slave bluetooth is inquirable!");
+	  SerialPrint("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
+	  //SerialPrint("The slave bluetooth is inquirable!");
 	  delay(2000); // This delay is required.
-	  Serial.flush();
-	  #endif
+	  SerialFlush();
 	}
 	
-	void Ardudroid :: BTserial_begin()
-	{
-	  #ifndef BT_SoftSerial
-	  Serial.begin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
-	  Serial.print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
-	  Serial.print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
-	  Serial.print("\r\n+STAUTO=0\r\n"); //  Auto-connection should be forbidden here
+	void Ardudroid :: BTgrove_begin(){
+	  SerialBegin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
+	  SerialPrint("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+	  SerialPrint("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
+	  SerialPrint("\r\n+STAUTO=0\r\n"); //  Auto-connection should be forbidden here
 	  delay(2000); // This delay is required.
-	  Serial.print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
-	  //Serial.println("The slave bluetooth is inquirable!");
+	  SerialPrint("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
+	  //SerialPrint.println("The slave bluetooth is inquirable!");
 	  //delay(2000); // This delay is required.
-	  Serial.flush();
-	  #endif
+	  SerialFlush();
 	}
 	
 	
 	//getter
-	//******************************************************************
+//******************************************************************
 	//Fernsteuerung
-	int Ardudroid :: getSpeed()
-	{
+	int Ardudroid :: getSpeed(){
 		return this->RemoteSpeed;
 	}
 	
-	int Ardudroid :: getDirection()
-	{
+	int Ardudroid :: getDirection(){
 		return this->RemoteDirection;
 	}
 	
-	bool Ardudroid :: getButton(uint8_t Button)
-	{
+	bool Ardudroid :: getButton(uint8_t Button){
 		switch (Button)
 		{
 			case 1:
@@ -175,42 +167,24 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	
 	
 	//LED_Steuerung
-	int Ardudroid :: getRed()
-	{
+	int Ardudroid :: getRed(){
 		return this->LedRed;
 	}
 	
-	int Ardudroid :: getGreen()
-	{
+	int Ardudroid :: getGreen(){
 		return this->LedGreen;
 	}
 	
-	int Ardudroid :: getBlue()
-	{
+	int Ardudroid :: getBlue(){
 		return this->LedBlue;
 	}
 	
-	bool Ardudroid :: getLedSwitch()
-	{
+	bool Ardudroid :: getLedSwitch(){
 		return this->LedLight;
 	}
 	
-	//Monitor
-	char Ardudroid :: getBluetooth(){
-		char data;
-		#if defined(BT_SoftSerial)
-			if(softSerial->available())
-				data =  (char)softSerial->read();
-		#else
-			if(Serial.available())
-				data = (char)Serial.read();
-		#endif
-		return data;
-	}
-	
 	//Events
-	bool Ardudroid :: getEvent(uint8_t Event)
-	{
+	bool Ardudroid :: getEvent(uint8_t Event){
 		switch (Event)
 		{
 			case 1:
@@ -241,10 +215,40 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		
 	//Read Android
 	//******************************************************************
+	//Monitor
+	char Ardudroid :: readMonitor(){
+		char data;
+			if(SerialAvailable())
+				data = (char)SerialRead();
 
-	void Ardudroid :: readBluetooth()
-	{	
-	#if defined(BT_SoftSerial) //|| defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)    
+		return data;
+	}
+	
+	char Ardudroid :: readSoftMonitor(){	
+		char data;
+			if(softSerial->available())
+				data = (char)softSerial->read();
+
+		return data;
+	}
+	
+	void Ardudroid :: readRemote(){	
+		while(SerialAvailable()){
+			char inChar = (char)SerialRead(); 
+			// add it to the inputString:
+			inputString[countData] = inChar;
+			countData++;
+
+			if (inChar == '\n') {
+			  stringComplete = true;
+			  countData = 0;
+			}
+		}
+		getData();
+
+	}
+	
+	void Ardudroid :: readSoftRemote(){    
 		while(softSerial->available()){
 			char inChar = (char)softSerial->read();
 			// add it to the inputString:
@@ -257,21 +261,7 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 			}
 		}
 		getData();	
-	#else
-		while(Serial.available()){
-			char inChar = (char)Serial.read(); 
-			// add it to the inputString:
-			inputString[countData] = inChar;
-			countData++;
-
-			if (inChar == '\n') {
-			  stringComplete = true;
-			  countData = 0;
-			}
-		}
-		getData();
-	#endif
-	}
+	}	
 	
 	
 	void Ardudroid :: getData()

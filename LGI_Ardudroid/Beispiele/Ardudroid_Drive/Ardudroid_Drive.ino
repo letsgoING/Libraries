@@ -16,7 +16,8 @@ Ardudroid Remote;
 void setup() 
 {
   //Starte Serielle Kommunikation mit Bluetooth-Modul
-  Remote.BTbee_begin(9600);
+  //Remote.BTgrove_begin();
+  Remote.BTserial_begin(9600);
 }
 
 void loop() 
@@ -28,15 +29,8 @@ void loop()
 
 //Lese Daten ein wenn vorhanden
 //*******************************
-void serialEvent() 
-{
-  //Lese Daten ein solange vorhanden
-  while(Serial.available()) 
-  {
+void serialEvent(){
     //lese Fernbedienung
     Remote.readBluetooth();	
-  }  
-  //Rechne Daten in passende Werte um
-  Remote.getData();
 }
 
