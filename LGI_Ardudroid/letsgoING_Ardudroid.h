@@ -81,7 +81,7 @@ public:
 	//Events
 	bool getEvent(uint8_t Event);
 		
-	//Read Android
+	//Read from Android
 	//******************************************************************
 	//Monitor
 	char readMonitor();
@@ -89,6 +89,12 @@ public:
 	//Remote
 	void readRemote();
 	void readSoftRemote();
+	
+	//Write to Android
+	//******************************************************************
+	//Monitor
+	void printSoftMonitor(char* String);
+	void printMonitor(char* String);
 	
 	//Parse Data
 	//******************************************************************

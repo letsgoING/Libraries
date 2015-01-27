@@ -35,6 +35,9 @@ readSoftMonitor	KEYWORD2
 readRemote	KEYWORD2
 readSoftRemote	KEYWORD2
 
+printSoftMonitor	KEYWORD2
+printMonitor	KEYWORD2
+
 getData	KEYWORD2
 
 #######################################

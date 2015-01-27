@@ -213,7 +213,7 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		}	
 	}
 		
-	//Read Android
+	//Read from Android
 	//******************************************************************
 	//Monitor
 	char Ardudroid :: readMonitor(){
@@ -263,7 +263,20 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		getData();	
 	}	
 	
+	//Write to Android
+	//******************************************************************
+	//Monitor
+	void Ardudroid :: printMonitor(char* String){
+		SerialPrint(String);
+	}
 	
+	void Ardudroid :: printSoftMonitor(char* String){
+		softSerial->write(String);
+	}
+	
+	
+	//Parse Data
+	//******************************************************************
 	void Ardudroid :: getData()
 	{
 		if(stringComplete)
