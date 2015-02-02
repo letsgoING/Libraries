@@ -2,16 +2,18 @@
 #include <Adafruit_NeoPixel.h>
 #include <LGI_QTouch.h>
 
-#define BTSystem 2 //0->Arduino HardwareSerial	1->Arduino(SoftSerial)	2->Attiny(SoftSerial)
+//Umschalten des Bluetoothsystems
+#define BTSystem 2 //0->Arduino(HardwareSerial)	1->Arduino(SoftSerial)	2->Attiny(SoftSerial)
 
-
+//Definition der NeoPixel-Pins
 #define PIN 2
 #define PIXEL 1
 
+
 //NeoPixel
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL, PIN, NEO_RGB + NEO_KHZ800);
-uint32_t white, red, green, blue;
-int numPixel;
+//Einlesen der Pixelanzahl
+int numPixel = strip.numPixels();
 
 //QTouch
 QTouchButton Button(A3, A2);
@@ -21,15 +23,15 @@ boolean touched = false;
 long lastTime=0;
 long waitTime = 50;
 
-//BT COM
+//BT Instanzen anlegen
 #if BTSystem == 0
 //Arduino HardwareSerial
 Ardudroid Remote;	
 
 void serialEvent(){
+  //Auslesen der Fernsteuerung
   Remote.readRemote();	
 }
-
 #elif BTsystem == 1
 //Arduino SoftwareSerial
 Ardudroid Remote(4,5);  //DO NOT USE PIN0 AND PIN1
@@ -42,11 +44,12 @@ Ardudroid Remote(0,1);
 void setup() {
   //Init NeoPixel
   strip.begin();
-  strip.show(); // Initialize all pixels to 'off'
+  strip.show(); // Initialisiere alle Pixel "aus"
 
-  white = strip.Color(250, 250, 250);
-  strip.setPixelColor(0, white);  
-  strip.show();
+  for( int i = 0; i < numPixel; i++){
+    strip.setPixelColor(i, 250, 250, 250);   // setze Farbe über RGB-Wert
+  }
+  strip.show(); //gebe Pixelfarbe aus
   delay(1000);
 
   //Init Button
@@ -70,9 +73,10 @@ void loop() {
 #endif
 
   //Set Color if Button touched
-  if(Button.isTouched()){
-    strip.setPixelColor(0,Remote.getRed() ,Remote.getGreen() ,Remote.getBlue());  
-    strip.show();
+  for( int i = 0; i < numPixel; i++){
+    strip.setPixelColor(i, 250, 250, 250);   // setze Farbe über RGB-Wert
   }
+  strip.show(); //gebe Pixelfarbe aus
 }
+
 

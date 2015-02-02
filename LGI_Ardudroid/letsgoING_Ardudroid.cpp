@@ -22,12 +22,14 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	#define SerialPrint(X) 
 	#define SerialRead() 0
 	#define SerialFlush() 
+	#define SerialParseInt()
 #else
 	#define SerialAvailable() Serial.available()
     #define SerialBegin(X) Serial.begin(X)
 	#define SerialPrint(X) Serial.print(X)
 	#define SerialRead() Serial.read()
 	#define SerialFlush() Serial.flush()
+	#define SerialParseInt() Serial.parseInt()
 #endif
 
 //Konstruktor
@@ -39,18 +41,20 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 			LedGreen		= 0;
 			LedBlue			= 0;
 			countData		= 0;
+			internState     = 0;
+			btState         = 0;
 			
 			RemoteButton1	= false;
 			RemoteButton2	= false;
 			RemoteSwitch1	= false;
 			RemoteSwitch2	= false;
 			LedLight		= false;
-			PhoneEvent1		= false;
-			PhoneEvent2		= false;
-			PhoneEvent3		= false;
-			PhoneEvent4		= false;
-			PhoneEvent5		= false;
-			PhoneEvent6		= false;
+			PhoneState1		= false;
+			PhoneState2		= false;
+			PhoneState3		= false;
+			PhoneState4		= false;
+			PhoneState5		= false;
+			PhoneState6		= false;
 			stringComplete	= false;
 	
 	}
@@ -64,18 +68,20 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 			LedGreen		= 0;
 			LedBlue			= 0;
 			countData		= 0;
+			internState     = 0;
+			btState         = 0;
 			
 			RemoteButton1	= false;
 			RemoteButton2	= false;
 			RemoteSwitch1	= false;
 			RemoteSwitch2	= false;
 			LedLight		= false;
-			PhoneEvent1		= false;
-			PhoneEvent2		= false;
-			PhoneEvent3		= false;
-			PhoneEvent4		= false;
-			PhoneEvent5		= false;
-			PhoneEvent6		= false;
+			PhoneState1		= false;
+			PhoneState2		= false;
+			PhoneState3		= false;
+			PhoneState4		= false;
+			PhoneState5		= false;
+			PhoneState6		= false;
 			stringComplete	= false;
 	
 	}
@@ -86,51 +92,39 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 			softSerial->begin(Baud);
 	}
 	
-	void Ardudroid :: BTsoftGrove_begin(){	
-			softSerial-> begin(38400);
-			
-			softSerial-> print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
-		    softSerial-> print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
-		    softSerial-> print("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
-		    delay(2000); // This delay is required.
-		    softSerial-> print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
-		    //Serial-> println("The slave bluetooth is inquirable!");
-		    delay(2000); // This delay is required.
-		    softSerial-> flush();  
-	}
-	
 	
 	void Ardudroid :: BTserial_begin(int Baud){//default 9600
 			SerialBegin(Baud);
 	}
 		
-	void Ardudroid :: BTgrove_setup(String btName, String btCode){
-	  SerialBegin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
-	  SerialPrint("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+	void Ardudroid :: BTgrove_setup(String btName, String btCode, String oldBaud, String newBaud){
+	  //Setze neue Baudrate (wenn geaendert)
+	  //************************************
+	  if(oldBaud.toInt() != newBaud.toInt()){
+		Serial.begin(oldBaud.toInt());
+		Serial.print("\r\n+STBD="+newBaud+"\r\n");
+		Serial.end();
+		delay(2000);
+	  }
+
+	  //Starte mit neuer Baudrate
+	  //*************************
+	  Serial.begin(newBaud.toInt());
+	  delay(50);
+
+	  Serial.print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+	  Serial.print("\r\n+STNA="+btName+"\r\n"); //set the bluetooth name
+	  Serial.print("\r\n+STPIN="+btCode+"\r\n");//Set SLAVE pincode
+	  Serial.print("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
+	  Serial.print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
 	  
-	  SerialPrint("\r\n+STNA="+btName+"\r\n"); //set the bluetooth name as "SeeedBTSlave"
-	  SerialPrint("\r\n+STPIN="+btCode+"\r\n");//Set SLAVE pincode"0000"
-	  
-	  SerialPrint("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
-	  SerialPrint("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
 	  delay(2000); // This delay is required.
-	  SerialPrint("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
-	  //SerialPrint("The slave bluetooth is inquirable!");
+	  Serial.print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
 	  delay(2000); // This delay is required.
-	  SerialFlush();
+	  Serial.flush();
 	}
 	
-	void Ardudroid :: BTgrove_begin(){
-	  SerialBegin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
-	  SerialPrint("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
-	  SerialPrint("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
-	  SerialPrint("\r\n+STAUTO=0\r\n"); //  Auto-connection should be forbidden here
-	  delay(2000); // This delay is required.
-	  SerialPrint("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
-	  //SerialPrint.println("The slave bluetooth is inquirable!");
-	  //delay(2000); // This delay is required.
-	  SerialFlush();
-	}
+
 	
 	
 	//getter
@@ -183,32 +177,32 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		return this->LedLight;
 	}
 	
-	//Events
-	bool Ardudroid :: getEvent(uint8_t Event){
-		switch (Event)
+	//States
+	bool Ardudroid :: getState(uint8_t State){
+		switch (State)
 		{
 			case 1:
-				return this->PhoneEvent1;
+				return this->PhoneState1;
 				break;
 			
 			case 2:
-				return this->PhoneEvent2;
+				return this->PhoneState2;
 				break;
 
 			case 3:
-				return this->PhoneEvent3;			
+				return this->PhoneState3;			
 				break;
 			
 			case 4:
-				return this->PhoneEvent4;
+				return this->PhoneState4;
 				break;
 				
 			case 5:
-				return this->PhoneEvent5;			
+				return this->PhoneState5;			
 				break;
 			
 			case 6:
-				return this->PhoneEvent6;
+				return this->PhoneState6;
 				break;
 		}	
 	}
@@ -263,17 +257,84 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 		getData();	
 	}	
 	
+	int Ardudroid :: readConState(){
+		char first, second, third;
+		 
+		while(SerialAvailable()){
+		    //parse return from Grove BTmodul -> returns '+BTSTATE:X' X=1-4
+			switch(internState){	
+			case 0://check for '+' as prelimiter
+				first = SerialRead();			
+				if(first =='+') internState++; 	
+				break;
+			case 1://if first Char = '+' -> check for 'B'
+				second = SerialRead();			
+				if(second =='+') internState++; 
+				break;
+			case 2://if second Char = 'B' -> read until ':'
+				third = SerialRead();
+				if(third ==':') {	//if third = ':' -> read state of Grove BTmodul
+				while(!SerialAvailable());
+				char state = SerialRead();
+					btState = state-48; //convert char to int
+					internState = 0;    // go back to first internState
+					}
+				break;
+			}
+		}
+		return btState;	 //return Grove BTmodule state
+	}
+
+	int Ardudroid :: readSoftConState(){
+		char first, second, third;
+		
+		while(softSerial->available()){
+			//parse return from Grove BTmodul -> returns '+BTSTATE:X' X=1-4
+			switch(internState){
+			case 0://check for '+' as prelimiter
+				first = softSerial->read();
+				if(first =='+') internState++; 
+				break;
+			case 1://if first Char = '+' -> check for 'B'
+				second = softSerial->read();
+				if(second =='+') internState++; 
+				break;
+			case 2://if second Char = 'B' -> read until ':'
+				third = softSerial->read();
+				if(third ==':') {//if third = ':' -> read state of Grove BTmodul
+				while(!softSerial->available());
+				char state = softSerial->read();;
+					btState = state-48;//convert char to int
+					internState = 0;    // go back to first internState
+					}
+				break;
+			}
+		}
+			
+		return btState;	//return Grove BTmodule state
+
+}
+	
 	//Write to Android
 	//******************************************************************
 	//Monitor
 	void Ardudroid :: printMonitor(char* String){
 		SerialPrint(String);
 	}
+
+	void Ardudroid :: printSoftMonitor(int Data){
+		softSerial->print(Data);
+	}
 	
 	void Ardudroid :: printSoftMonitor(char* String){
 		softSerial->write(String);
 	}
-	
+	void Ardudroid :: printMonitor(int Data){
+		SerialPrint(Data);
+	}	
+
+
+
 	
 	//Parse Data
 	//******************************************************************
@@ -319,15 +380,15 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 			  this->RemoteSwitch2 = (this->inputString[14] - 48) > 0;			  
 			  break;
 
-			  //Telefon Events
+			  //Telefon States
 			case 2:
 
-			  this->PhoneEvent1 = (this->inputString[1]  - 48) > 0;
-			  this->PhoneEvent2 = (this->inputString[2]  - 48) > 0;
-			  this->PhoneEvent3 = (this->inputString[3]  - 48) > 0;
-			  this->PhoneEvent4 = (this->inputString[4]  - 48) > 0;
-			  this->PhoneEvent5 = (this->inputString[5]  - 48) > 0;
-			  this->PhoneEvent6 = (this->inputString[6]  - 48) > 0;
+			  this->PhoneState1 = (this->inputString[1]  - 48) > 0;
+			  this->PhoneState2 = (this->inputString[2]  - 48) > 0;
+			  this->PhoneState3 = (this->inputString[3]  - 48) > 0;
+			  this->PhoneState4 = (this->inputString[4]  - 48) > 0;
+			  this->PhoneState5 = (this->inputString[5]  - 48) > 0;
+			  this->PhoneState6 = (this->inputString[6]  - 48) > 0;
 			  break;
 			}
 

@@ -9,7 +9,6 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	- Rot
 	- Grün
 	- Blau
-	
 05.12.2013 Anian Bühler
 */
 
@@ -33,19 +32,21 @@ private:
 	uint8_t countData,
 			LedRed, 
 			LedGreen, 
-			LedBlue;
+			LedBlue,
+			internState,
+			btState;
 			
 	bool	RemoteButton1,
 			RemoteButton2,
 			RemoteSwitch1,
 			RemoteSwitch2,
 			LedLight,
-			PhoneEvent1,
-			PhoneEvent2,
-			PhoneEvent3,
-			PhoneEvent4,
-			PhoneEvent5,
-			PhoneEvent6,
+			PhoneState1,
+			PhoneState2,
+			PhoneState3,
+			PhoneState4,
+			PhoneState5,
+			PhoneState6,
 			stringComplete;
 			
 	SoftwareSerial *softSerial;		
@@ -61,10 +62,8 @@ public:
 	//setter
 	//****************************************************************** 
 	void BTsoftSerial_begin(int Baud);	
-	void BTsoftGrove_begin(); 
 	void BTserial_begin(int Baud);
-	void BTgrove_setup(String btName, String btCode);
-	void BTgrove_begin();
+	void BTgrove_setup(String btName, String btCode, String oldBaud, String newBaud);
 	//getter
 	//******************************************************************
 	//Fernsteuerung
@@ -79,7 +78,7 @@ public:
 	bool getLedSwitch();
 	
 	//Events
-	bool getEvent(uint8_t Event);
+	bool getState(uint8_t State);
 		
 	//Read from Android
 	//******************************************************************
@@ -90,11 +89,17 @@ public:
 	void readRemote();
 	void readSoftRemote();
 	
+	//wait for Connection
+	int readConState();
+	int readSoftConState();
+	
 	//Write to Android
 	//******************************************************************
 	//Monitor
 	void printSoftMonitor(char* String);
+	void printSoftMonitor(int Data);	
 	void printMonitor(char* String);
+	void printMonitor(int Data);	
 	
 	//Parse Data
 	//******************************************************************

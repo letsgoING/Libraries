@@ -27,10 +27,10 @@ void loop()
 }
 
 
-//Lese Daten ein wenn vorhanden
+//Lese Daten ein (wenn vorhanden)
 //*******************************
 void serialEvent(){
-    //lese Fernbedienung
-    Remote.readBluetooth();	
+    //lese Bluetooth-Fernbedienung und zerlege die Werte passend
+    Remote.readRemote();	
 }
 

@@ -34,7 +34,8 @@ readMonitor	KEYWORD2
 readSoftMonitor	KEYWORD2
 readRemote	KEYWORD2
 readSoftRemote	KEYWORD2
-
+parseINT	KEYWORD2
+parseSoftINT 	KEYWORD2
 printSoftMonitor	KEYWORD2
 printMonitor	KEYWORD2
 
