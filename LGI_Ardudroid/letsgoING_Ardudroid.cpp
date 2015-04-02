@@ -23,13 +23,15 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	#define SerialRead() 0
 	#define SerialFlush() 
 	#define SerialParseInt()
+	#define SerialEnd()
 #else
 	#define SerialAvailable() Serial.available()
     #define SerialBegin(X) Serial.begin(X)
-	#define SerialPrint(X) Serial.print(X)
+	#define SerialPrint(X) SerialPrint(X)
 	#define SerialRead() Serial.read()
 	#define SerialFlush() Serial.flush()
 	#define SerialParseInt() Serial.parseInt()
+	#define SerialEnd()	Serial.end()
 #endif
 
 //Konstruktor
@@ -101,27 +103,27 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 	  //Setze neue Baudrate (wenn geaendert)
 	  //************************************
 	  if(oldBaud.toInt() != newBaud.toInt()){
-		Serial.begin(oldBaud.toInt());
-		Serial.print("\r\n+STBD="+newBaud+"\r\n");
-		Serial.end();
+		SerialBegin(oldBaud.toInt());
+		SerialPrint("\r\n+STBD="+newBaud+"\r\n");
+		SerialEnd();
 		delay(2000);
 	  }
 
 	  //Starte mit neuer Baudrate
 	  //*************************
-	  Serial.begin(newBaud.toInt());
+	  SerialBegin(newBaud.toInt());
 	  delay(50);
 
-	  Serial.print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
-	  Serial.print("\r\n+STNA="+btName+"\r\n"); //set the bluetooth name
-	  Serial.print("\r\n+STPIN="+btCode+"\r\n");//Set SLAVE pincode
-	  Serial.print("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
-	  Serial.print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
+	  SerialPrint("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+	  SerialPrint("\r\n+STNA="+btName+"\r\n"); //set the bluetooth name
+	  SerialPrint("\r\n+STPIN="+btCode+"\r\n");//Set SLAVE pincode
+	  SerialPrint("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
+	  SerialPrint("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
 	  
 	  delay(2000); // This delay is required.
-	  Serial.print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
+	  SerialPrint("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
 	  delay(2000); // This delay is required.
-	  Serial.flush();
+	  SerialFlush();
 	}
 	
 
