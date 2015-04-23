@@ -38,7 +38,7 @@ class QTouch
 {
 	private:
 		uint8_t _TouchPin,		
-				_PartnerPin,;
+				_PartnerPin;
 
 
 	public:
