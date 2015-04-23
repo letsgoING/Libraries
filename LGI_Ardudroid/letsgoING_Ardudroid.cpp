@@ -27,7 +27,7 @@ Klasse zur Kommunikation mit Android Phone / lgI-App:
 #else
 	#define SerialAvailable() Serial.available()
     #define SerialBegin(X) Serial.begin(X)
-	#define SerialPrint(X) SerialPrint(X)
+	#define SerialPrint(X) Serial.print(X)
 	#define SerialRead() Serial.read()
 	#define SerialFlush() Serial.flush()
 	#define SerialParseInt() Serial.parseInt()
