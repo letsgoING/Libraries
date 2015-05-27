@@ -25,7 +25,7 @@ Anian Bühler 01.09.2014
 	#define ADC_DIR   DDRB	      //
 	#define ADMUX_SETUP 0b11010000// Set Vref to 2,56V with ext Cap
 	#define MUX_REF_VCC 0b11010000 // value to set the ADC reference to Vcc
-	#define ADC_SETUP 0b11000011  // Set ADC pre-scaler to 8
+	#define ADC_SETUP   0b11000100//0b11000011  // Set ADC pre-scaler to 8
 #else // IF Standard Arduino Boards are used
 	#define ADC_PORT  PORTC       //USE PORT C
 	#define ADC_DIR   DDRC	      // 
@@ -38,11 +38,25 @@ class QTouch
 {
 	private:
 		uint8_t _TouchPin,		
-				_PartnerPin;
-
+				_PartnerPin;	
+				
+	const uint8_t _tiny8AnalogToMux[10] = {
+				0, //D0
+				0, //D1
+				1, //D2 Ain1
+				3, //D3 Ain3
+				2, //D4 Ain2
+				0, //RESET D5 Ain0
+				0, //A0->Ain0(Reset)
+				1, //A1->Ain1 
+				2, //A2->Ain2
+				3, //A3->Ain3
+			};			
+	
 
 	public:
-		 
+
+
 	
 	//Konstruktoren
 	//******************************************************************

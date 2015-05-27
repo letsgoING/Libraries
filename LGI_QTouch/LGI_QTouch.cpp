@@ -64,37 +64,16 @@ uint16_t QTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
 	  uint8_t MUXPartner;
 	  
 	  	 // IF Attiny 8Pin is used --> ADC1 (PB2), ADC2(PB4), ADC3 (PB3)
-	#if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
-		//const A0-A3 is used
-		if(pin > 5) pin -=6;
-		if(partner > 5) partner -=6;
-	
-	//Handling if digitalPin declaration is used
-	/*	//change Pin to MUX
-		switch(pin){
-		case 2: MUXPin = 1;
-			break;
-		case 3: MUXPin = 3;
-			break;	
-		case 4: MUXPin = 2;
-			break;
-		default: return NULL;
-		}
-		switch(partner){
-		case 2: MUXPartner = 1;
-			break;
-		case 3: MUXPartner = 3;
-			break;	
-		case 4: MUXPartner = 2;
-			break;
-		default: return NULL;
-		}
-		*/
-	#else // IF Standard Arduino Boards are used
-		//const A0-A5 is used
-		if(pin > 13) pin -= 14;
-		if(partner > 13) partner -= 14;
+	#if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)			
+		MUXPin     = _tiny8AnalogToMux[pin];
+		MUXPartner = _tiny8AnalogToMux[partner];
+		pin = (pin < 6 ? pin : pin - 6);//analogPinToChannel(pin);
+		partner = (partner < 6 ? partner : partner - 6);
 
+	#else // IF Standard Arduino Boards are used
+		//if const A0-A5 is used
+		pin = (pin < 14 ? pin : pin - 14);//analogPinToChannel(pin);
+		partner = (partner < 14 ? partner : partner - 14);
 		MUXPin = pin;
 		MUXPartner = partner;
 	#endif;
@@ -121,7 +100,6 @@ uint16_t QTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
 
 	  return ADC; // return conversion result
 }
-
 
 
 //QTouch BUTTON
