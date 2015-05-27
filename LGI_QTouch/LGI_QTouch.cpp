@@ -8,6 +8,7 @@ Kupferfläche oder sonstige leitfähige Fläche über 1-10kOhm Widerstand an Ana
 Attiny 25/45/85 AIN1-3
 
 Anian Bühler 09.01.2015
+AB	27.05.2015
 */
 
 #include "LGI_QTouch.h"
@@ -64,11 +65,12 @@ uint16_t QTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
 	  
 	  	 // IF Attiny 8Pin is used --> ADC1 (PB2), ADC2(PB4), ADC3 (PB3)
 	#if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
-		//const A1-A3 is used
-		if(pin > 5) pin -=5;
-		if(partner > 5) partner -=5;
-		
-		//change Pin to MUX
+		//const A0-A3 is used
+		if(pin > 5) pin -=6;
+		if(partner > 5) partner -=6;
+	
+	//Handling if digitalPin declaration is used
+	/*	//change Pin to MUX
 		switch(pin){
 		case 2: MUXPin = 1;
 			break;
@@ -87,6 +89,7 @@ uint16_t QTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
 			break;
 		default: return NULL;
 		}
+		*/
 	#else // IF Standard Arduino Boards are used
 		//const A0-A5 is used
 		if(pin > 13) pin -= 14;
