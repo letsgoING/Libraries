@@ -23,9 +23,9 @@ Anian Bühler 01.09.2014
 #if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)         
 	#define ADC_PORT  PORTB     //USE PORT B
 	#define ADC_DIR   DDRB	      //
-	#define ADMUX_SETUP 0b11010000// Set Vref to 2,56V with ext Cap
-	#define MUX_REF_VCC 0b11010000 // value to set the ADC reference to Vcc
-	#define ADC_SETUP   0b11000100//0b11000011  // Set ADC pre-scaler to 8
+	#define ADMUX_SETUP 0b10010000// Set Vref to 2,56V with ext Cap
+	#define MUX_REF_VCC 0b10010000 // value to set the ADC reference to Vcc
+	#define ADC_SETUP   0b10000100//0b11000011  // Set ADC pre-scaler to 8
 #else // IF Standard Arduino Boards are used
 	#define ADC_PORT  PORTC       //USE PORT C
 	#define ADC_DIR   DDRC	      // 
